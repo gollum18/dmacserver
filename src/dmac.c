@@ -30,12 +30,30 @@ void print_usage() {
 }
 
 int count_delims(char * src, char * delim) {
+	size_t slen=strlen(src), dlen=strlen(delim);
+	
+	if (slen == 0 || dlen == 0) {
+		return 0;
+	}
+	
 	int delims = 0;
+
+	char * sub = strstr(src, delim);
+	while (sub != NULL) {
+		delims++;
+		sub+=dlen;
+		sub = strstr(sub, delim);
+	}
 
 	return delims;
 }
 
 void parse_str(char * src, char * tokens[], int n, char * delim) {
+	if (strlen(src) == 0 || strlen(delim) == 0) {
+		// TODO: Set `errno` here
+		return;
+	}
+	
 	int i = 0;
 	char * token = strtok(src, delim);
 	do {
@@ -44,12 +62,12 @@ void parse_str(char * src, char * tokens[], int n, char * delim) {
 }
 
 int main (int argc, char * argv[]) {
-	if (argc != 1) {
+	if (argc != 2) {
 		print_usage();
 		exit(1);
 	}
 
-	char * server = argv[0];
+	char * server = argv[1];
 	
 	CLIENT *cl;
 	char * value;
